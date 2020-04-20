@@ -83,4 +83,24 @@ public class LoanScheduleControllerTest {
         //@formatter:on
     }
 
+    @Test
+    public void testLoanSchedule_withInvalidData() {
+        LoanScheduleRequestDTO request = LoanScheduleRequestDTO.builder()
+                .loanAmount(5000l)
+                .duration(24)
+                .nominalRate(0.0f)
+                .startDate(LocalDateTime.now())
+                .build();
+
+        //formatter:off
+        given()
+                .header(new Header("content-type", JSON.toString()))
+                .body(request)
+                .when()
+                .post(baseUrl)
+                .then()
+                .statusCode(INTERNAL_SERVER_ERROR.value());
+        //formatter:on
+    }
+
 }
