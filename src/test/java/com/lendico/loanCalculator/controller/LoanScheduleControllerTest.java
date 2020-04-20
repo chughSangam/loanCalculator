@@ -14,8 +14,7 @@ import java.time.LocalDateTime;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 @ContextConfiguration(classes = LoanCalculatorApplication.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -61,6 +60,26 @@ public class LoanScheduleControllerTest {
                 .post(baseUrl)
                 .then()
                 .statusCode(BAD_REQUEST.value());
+        //formatter:on
+    }
+
+    @Test
+    public void testLoanSchedule_withInvalidData() {
+        LoanScheduleRequestDTO request = LoanScheduleRequestDTO.builder()
+                .loanAmount(5000l)
+                .duration(24)
+                .nominalRate(0.0f)
+                .startDate(LocalDateTime.now())
+                .build();
+
+        //formatter:off
+        given()
+                .header(new Header("content-type", JSON.toString()))
+                .body(request)
+                .when()
+                .post(baseUrl)
+                .then()
+                .statusCode(INTERNAL_SERVER_ERROR.value());
         //formatter:on
     }
 
